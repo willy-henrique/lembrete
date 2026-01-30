@@ -24,6 +24,14 @@ View your app in AI Studio: https://ai.studio/apps/temp/1
 
 Use `.env-teste` para Firebase e Cloudinary. Nunca commitar esse arquivo. Template: [.env-teste.example](.env-teste.example). Defina `VITE_CLOUDINARY_CLOUD_NAME` no [console Cloudinary](https://console.cloudinary.com).
 
+## Preparar para subir no GitHub
+
+- [ ] Nunca commitar `.env`, `.env-teste`, `.env.local` nem JSON do Firebase Admin (já estão no `.gitignore`).
+- [ ] Copiar `.env-teste.example` → `.env-teste` e preencher variáveis apenas na sua máquina.
+- [ ] Repositório remoto: `https://github.com/willy-henrique/lembrete.git`.
+- [ ] Antes do push: conferir `git status` — não deve listar `.env*`, `node_modules` nem `*firebase*adminsdk*.json`.
+- [ ] Rodar `push-github.bat` ou os comandos abaixo.
+
 ## Subir para o GitHub
 
 **Opção 1:** Dar duplo clique em `push-github.bat` (ou rodar no terminal). O script remove `config.lock`, faz init/add/commit/remote/push.

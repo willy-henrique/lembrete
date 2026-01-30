@@ -2,6 +2,9 @@
 cd /d "%~dp0"
 
 echo.
+echo === Push Lembrete - GitHub ===
+echo.
+
 echo [1/6] config.lock...
 if exist ".git\config.lock" (
     del /f /q ".git\config.lock" 2>nul
@@ -25,8 +28,9 @@ if errorlevel 1 (
 echo.
 echo [3/6] Add...
 git add .
-
+git status --short
 echo.
+
 echo [4/6] Commit...
 git diff --staged --quiet 2>nul
 if errorlevel 1 goto docommit
@@ -52,12 +56,13 @@ echo      Ok.
 echo.
 echo [6/6] Push...
 git push -u origin main
-if errorlevel 1 goto pusherr
+set PUSHERR=%errorlevel%
+
 echo.
+if %PUSHERR% neq 0 goto pusherr
 echo *** Push OK! ***
 goto end
 :pusherr
-echo.
 echo ERROR. Check: repo exists, git login, token or SSH.
 :end
 echo.

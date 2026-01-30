@@ -3,12 +3,14 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Employee, BirthdayInfo, Unit } from './types';
 import { employeeService } from './services/employeeService';
 import { calculateBirthdayInfo } from './utils/date-utils';
+import { getCongratulationsMessage, openWhatsAppWithMessage } from './utils/whatsapp';
 import BirthdayCard from './components/BirthdayCard';
 import Timeline from './components/Timeline';
 import FilterBar from './components/FilterBar';
 import Celebration from './components/Celebration';
 import EmployeeModal from './components/EmployeeModal';
 import CelebrationCard from './components/CelebrationCard';
+import ConfirmDeleteAllModal from './components/ConfirmDeleteAllModal';
 
 declare const html2canvas: any;
 
@@ -21,6 +23,8 @@ const App: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [exportingId, setExportingId] = useState<string | null>(null);
+  const [confirmDeleteAllOpen, setConfirmDeleteAllOpen] = useState(false);
+  const [isDeletingAll, setIsDeletingAll] = useState(false);
 
   const fetchEmployees = async () => {
     setLoading(true);
@@ -65,12 +69,25 @@ const App: React.FC = () => {
     }
   };
 
+  const handleDeleteAll = async () => {
+    setIsDeletingAll(true);
+    try {
+      await employeeService.deleteAllEmployees();
+      await fetchEmployees();
+      setConfirmDeleteAllOpen(false);
+    } finally {
+      setIsDeletingAll(false);
+    }
+  };
+
   const handleShareOrExport = async (employee: BirthdayInfo, mode: 'export' | 'share' = 'export') => {
     setExportingId(employee.id);
     await new Promise(resolve => setTimeout(resolve, 600));
 
     const element = document.getElementById(`export-card-${employee.id}`);
+    const baseMessage = getCongratulationsMessage(employee.name);
     if (!element) {
+      openWhatsAppWithMessage(employee.phone, baseMessage);
       setExportingId(null);
       return;
     }
@@ -87,23 +104,24 @@ const App: React.FC = () => {
       const fileName = `parabens-stival-${employee.name.toLowerCase().replace(/\s/g, '-')}.jpg`;
       const file = new File([blob], fileName, { type: 'image/jpeg' });
 
-      const beautifulText = `Parabéns, ${employee.name}! 🎂 Desejamos que este novo ciclo seja iluminado, repleto de saúde, paz e muitas alegrias. Que sua trajetória continue sendo marcada pelo sucesso e por grandes realizações, tanto na vida pessoal quanto na carreira. Aproveite seu dia ao máximo! 🎈🥳`;
+      const textWithAttachment = baseMessage + '\n\n(Anexe a imagem que acabamos de baixar!)';
 
       if (mode === 'share' && navigator.share) {
         try {
           await navigator.share({
             files: [file],
-            text: beautifulText,
+            text: baseMessage,
             title: `Aniversário de ${employee.name}`
           });
         } catch (shareErr) {
-          downloadAndWhatsApp(blob, fileName, employee.phone, beautifulText);
+          downloadAndWhatsApp(blob, fileName, employee.phone, textWithAttachment);
         }
       } else {
-        downloadAndWhatsApp(blob, fileName, employee.phone, beautifulText, mode === 'export');
+        downloadAndWhatsApp(blob, fileName, employee.phone, textWithAttachment, mode === 'export');
       }
     } catch (err) {
       console.error("Erro no processamento:", err);
+      openWhatsAppWithMessage(employee.phone, baseMessage);
     } finally {
       setExportingId(null);
     }
@@ -118,8 +136,7 @@ const App: React.FC = () => {
 
     if (!onlyDownload) {
       setTimeout(() => {
-        const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(text + '\n\n(Anexe a imagem que acabamos de baixar!)')}`;
-        window.open(waUrl, '_blank');
+        openWhatsAppWithMessage(phone, text);
       }, 500);
     }
     
@@ -262,6 +279,16 @@ const App: React.FC = () => {
                       <span className="text-[#AACC00] text-[10px] uppercase font-black tracking-widest">Aniversários Hoje</span>
                       <span className="text-[#FFB703] text-2xl md:text-3xl font-black leading-none">{todayBirthdays.length}</span>
                    </div>
+                   {employees.length > 0 && (
+                     <button
+                       type="button"
+                       onClick={() => setConfirmDeleteAllOpen(true)}
+                       className="w-full mt-4 py-2.5 rounded-xl text-[10px] uppercase font-black tracking-widest text-red-400 hover:text-white hover:bg-red-500/90 border border-red-400/50 hover:border-transparent transition-all flex items-center justify-center gap-2"
+                     >
+                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                       Excluir todos os cadastros
+                     </button>
+                   )}
                 </div>
              </div>
 
@@ -283,6 +310,14 @@ const App: React.FC = () => {
         onClose={() => setIsModalOpen(false)} 
         onSave={handleSave} 
         employeeToEdit={editingEmployee}
+      />
+
+      <ConfirmDeleteAllModal
+        isOpen={confirmDeleteAllOpen}
+        onClose={() => setConfirmDeleteAllOpen(false)}
+        onConfirm={handleDeleteAll}
+        count={employees.length}
+        isDeleting={isDeletingAll}
       />
 
       <footer className="max-w-6xl mx-auto mt-16 md:mt-24 border-t border-[#F4F1DE] py-10 md:py-12 px-6 text-center">

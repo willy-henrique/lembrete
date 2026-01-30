@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react';
 import { BirthdayInfo } from '../types';
 import { formatBirthDateDisplay } from '../utils/date-utils';
+import { getCongratulationsMessage, openWhatsAppWithMessage } from '../utils/whatsapp';
 
 interface BirthdayCardProps {
   employee: BirthdayInfo;
@@ -12,14 +12,21 @@ interface BirthdayCardProps {
 const BirthdayCard: React.FC<BirthdayCardProps> = ({ employee, variant = 'main', onShare }) => {
   const [isSharing, setIsSharing] = useState(false);
 
+  const sendToWhatsApp = () => {
+    const message = getCongratulationsMessage(employee.name);
+    openWhatsAppWithMessage(employee.phone, message);
+  };
+
   const handleShareClick = async () => {
     if (onShare) {
       setIsSharing(true);
-      await onShare(employee);
-      setIsSharing(false);
+      try {
+        await onShare(employee);
+      } finally {
+        setIsSharing(false);
+      }
     } else {
-      const text = `Feliz aniversário, ${employee.name}! 🎂 Desejo muita saúde, felicidade e sucesso em sua caminhada. Aproveite muito o seu dia! 🥳🎈`;
-      window.open(`https://wa.me/${employee.phone}?text=${encodeURIComponent(text)}`, '_blank');
+      sendToWhatsApp();
     }
   };
 

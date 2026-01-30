@@ -40,5 +40,9 @@ export const employeeService = {
     const current = await this.getEmployees();
     const filtered = current.filter(e => e.id !== id);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+  },
+
+  async deleteAllEmployees(): Promise<void> {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
   }
 };

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BirthdayInfo } from '../types';
 
@@ -8,104 +7,195 @@ interface CelebrationCardProps {
 }
 
 const CelebrationCard: React.FC<CelebrationCardProps> = ({ employee, cardId }) => {
+  const bgGreen = '#112d22';
+  const gold = '#FFB703';
+
   return (
-    <div 
+    <div
       id={cardId}
-      className="fixed -left-[5000px] top-0 w-[1080px] h-[1350px] overflow-hidden flex flex-col items-center justify-between p-20 shadow-2xl"
-      style={{ 
-        background: `radial-gradient(circle at center, #24523B 0%, #112d22 100%)`,
-        fontFamily: "'Inter', sans-serif"
+      className="fixed -left-[5000px] top-0 w-[1080px] h-[1350px] overflow-hidden flex flex-col"
+      style={{
+        backgroundColor: bgGreen,
+        fontFamily: "'Inter', sans-serif",
       }}
     >
-      {/* Background Texture Overlay (Compatível com html2canvas) */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
-        backgroundImage: `linear-gradient(45deg, rgba(255,255,255,0.05) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.05) 75%, transparent 75%, transparent)`,
-        backgroundSize: '4px 4px'
-      }}></div>
+      {/* Textura diagonal sutil */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          opacity: 0.06,
+          backgroundImage: `repeating-linear-gradient(
+            45deg,
+            transparent 0,
+            transparent 3px,
+            rgba(255,255,255,0.2) 3px,
+            rgba(255,255,255,0.2) 4px
+          )`,
+        }}
+      />
 
-      {/* Glossy Corporate Balloons */}
+      {/* Balloons – top-left: green + white */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Balloon Left 1 (Emerald) */}
-        <div className="absolute top-12 left-16 w-48 h-64 rounded-[50%] rotate-[-12deg]" style={{
-          background: 'radial-gradient(circle at 30% 30%, #4D9272, #1B4332)',
-          boxShadow: '20px 20px 40px rgba(0,0,0,0.3)'
-        }}>
-          <div className="absolute top-[15%] left-[20%] w-[20%] h-[30%] bg-white/20 rounded-[50%]"></div>
+        <div
+          className="absolute w-44 h-56 rounded-[50%]"
+          style={{
+            top: 24,
+            left: 32,
+            transform: 'rotate(-15deg)',
+            background: 'radial-gradient(circle at 28% 28%, #3d7a5c, #1B4332)',
+            boxShadow: '16px 16px 36px rgba(0,0,0,0.35)',
+          }}
+        >
+          <div className="absolute top-[12%] left-[18%] w-[22%] h-[28%] rounded-full bg-white/25" />
         </div>
-        {/* Balloon Left 2 (Silver) */}
-        <div className="absolute top-32 left-32 w-44 h-56 rounded-[50%] rotate-[-25deg]" style={{
-          background: 'radial-gradient(circle at 30% 30%, #E5E7EB, #9CA3AF)',
-          boxShadow: '15px 15px 30px rgba(0,0,0,0.2)'
-        }}>
-          <div className="absolute top-[15%] left-[20%] w-[15%] h-[25%] bg-white/40 rounded-[50%]"></div>
+        <div
+          className="absolute w-40 h-52 rounded-[50%]"
+          style={{
+            top: 72,
+            left: 88,
+            transform: 'rotate(-28deg)',
+            background: 'radial-gradient(circle at 28% 28%, #f8fafc, #cbd5e1)',
+            boxShadow: '12px 12px 28px rgba(0,0,0,0.25)',
+          }}
+        >
+          <div className="absolute top-[12%] left-[18%] w-[20%] h-[26%] rounded-full bg-white/50" />
         </div>
-
-        {/* Balloon Right 1 (Gold) */}
-        <div className="absolute top-12 right-16 w-48 h-64 rounded-[50%] rotate-[12deg]" style={{
-          background: 'radial-gradient(circle at 30% 30%, #FDE047, #A16207)',
-          boxShadow: '-20px 20px 40px rgba(0,0,0,0.3)'
-        }}>
-          <div className="absolute top-[15%] left-[20%] w-[20%] h-[30%] bg-white/30 rounded-[50%]"></div>
+        {/* Top-right: green + golden yellow */}
+        <div
+          className="absolute w-44 h-56 rounded-[50%]"
+          style={{
+            top: 24,
+            right: 32,
+            left: 'auto',
+            transform: 'rotate(12deg)',
+            background: 'radial-gradient(circle at 28% 28%, #3d7a5c, #1B4332)',
+            boxShadow: '-16px 16px 36px rgba(0,0,0,0.35)',
+          }}
+        >
+          <div className="absolute top-[12%] left-[18%] w-[22%] h-[28%] rounded-full bg-white/25" />
         </div>
-        {/* Balloon Right 2 (Emerald) */}
-        <div className="absolute top-32 right-32 w-44 h-56 rounded-[50%] rotate-[25deg]" style={{
-          background: 'radial-gradient(circle at 30% 30%, #4D9272, #1B4332)',
-          boxShadow: '-15px 15px 30px rgba(0,0,0,0.2)'
-        }}>
-          <div className="absolute top-[15%] left-[20%] w-[15%] h-[25%] bg-white/20 rounded-[50%]"></div>
+        <div
+          className="absolute w-40 h-52 rounded-[50%]"
+          style={{
+            top: 72,
+            right: 88,
+            left: 'auto',
+            transform: 'rotate(26deg)',
+            background: `radial-gradient(circle at 28% 28%, #fde047, #a16207)`,
+            boxShadow: '-12px 12px 28px rgba(0,0,0,0.3)',
+          }}
+        >
+          <div className="absolute top-[12%] left-[18%] w-[20%] h-[26%] rounded-full bg-white/35" />
         </div>
       </div>
 
-      {/* Central Content Section */}
-      <div className="relative z-10 flex flex-col items-center w-full mt-24">
-        {/* The Gallery Frame */}
-        <div className="bg-white p-8 pb-20 shadow-[0_50px_100px_rgba(0,0,0,0.6)] transform rotate-[-1deg] border border-gray-100">
-          <div className="w-[580px] h-[580px] bg-gray-200 overflow-hidden shadow-inner border border-gray-300">
+      {/* Central content */}
+      <div className="relative z-10 flex flex-col items-center flex-1 pt-20 px-16">
+        {/* Polaroid frame – white, tilted, photo only */}
+        <div
+          className="bg-white flex flex-col items-stretch overflow-hidden"
+          style={{
+            width: 560,
+            paddingTop: 20,
+            paddingLeft: 20,
+            paddingRight: 20,
+            paddingBottom: 24,
+            boxShadow: '0 32px 64px rgba(0,0,0,0.5)',
+            transform: 'rotate(-4deg)',
+          }}
+        >
+          <div
+            className="w-full bg-gray-200 overflow-hidden border border-gray-200"
+            style={{ aspectRatio: '1', minHeight: 420 }}
+          >
             {employee.photoUrl ? (
-              <img src={employee.photoUrl} alt={employee.name} className="w-full h-full object-cover" />
+              <img
+                src={employee.photoUrl}
+                alt={employee.name}
+                className="w-full h-full object-cover"
+                crossOrigin="anonymous"
+              />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-[#1B4332] text-[15rem] font-black bg-[#F4F1DE] font-agro-title">
+              <div
+                className="w-full h-full flex items-center justify-center font-agro-title font-black text-[#1B4332]"
+                style={{ fontSize: 160 }}
+              >
                 {employee.name.charAt(0)}
               </div>
             )}
           </div>
-          <div className="mt-12 text-center">
-            <h2 className="font-cursive text-[7.5rem] text-[#1B4332] leading-none drop-shadow-sm">Feliz aniversário</h2>
-          </div>
         </div>
-      </div>
 
-      {/* Message & Branding Section */}
-      <div className="relative z-10 w-full flex flex-col items-center px-24 pb-12">
-        <div className="max-w-4xl text-center space-y-8 mb-20">
-          <p className="text-[2.2rem] font-light leading-snug text-white/95 tracking-wide">
-            Que este novo ano de vida seja repleto de <br/>
-            <span className="font-bold text-[#FFB703]">saúde, paz e conquistas</span>. Desejamos sucesso <br/>
-            em sua vida, com muitas realizações pessoais <br/>
-            e profissionais. Aproveite seu dia, felicidades!
+        {/* "Feliz aniversário" – below polaroid, script, verde que destaca no fundo */}
+        <h2
+          className="font-cursive text-center mt-8"
+          style={{
+            color: '#95d5b2',
+            fontSize: 92,
+            lineHeight: 1,
+            textShadow: '0 2px 12px rgba(0,0,0,0.3), 0 0 1px rgba(0,0,0,0.2)',
+            fontFamily: "'Great Vibes', cursive",
+          }}
+        >
+          Feliz aniversário
+        </h2>
+
+        {/* Message – white, highlight in gold */}
+        <div className="max-w-2xl text-center mt-10 px-4">
+          <p
+            className="leading-relaxed"
+            style={{
+              color: 'rgba(255,255,255,0.95)',
+              fontSize: 26,
+              fontWeight: 400,
+            }}
+          >
+            Que este novo ano de vida seja repleto de{' '}
+            <span style={{ color: gold, fontWeight: 700 }}>saúde, paz e conquistas</span>.
+            Desejamos sucesso em sua vida, com muitas realizações pessoais e profissionais.
+            Aproveite seu dia, felicidades!
           </p>
         </div>
-
-        {/* Footer Brand */}
-        <div className="w-full flex justify-end items-end border-t border-white/10 pt-12">
-          <div className="flex items-center gap-8">
-            <div className="text-right">
-              <span className="block text-xl font-black uppercase tracking-[0.3em] text-[#FFB703] leading-none">Fazenda</span>
-              <span className="block text-4xl font-agro-title font-black uppercase tracking-[0.1em] text-white">Boi Verde</span>
-              <div className="h-1 bg-[#FFB703] mt-2 ml-auto" style={{ width: '60%' }}></div>
-            </div>
-            <div className="bg-white p-5 rounded-2xl shadow-xl">
-               <svg className="w-16 h-16 text-[#1B4332]" viewBox="0 0 100 100" fill="currentColor">
-                  <path d="M50 10 C30 10 20 25 20 45 C20 65 50 90 50 90 C50 90 80 65 80 45 C80 25 70 10 50 10 Z M50 60 C40 60 35 50 35 40 C35 30 40 25 50 25 C60 25 65 30 65 40 C65 50 60 60 50 60 Z" />
-                  <path d="M40 75 L60 75" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-               </svg>
-            </div>
-          </div>
-        </div>
       </div>
 
-      <div className="absolute bottom-10 left-10 opacity-5">
-         <span className="text-[8px] font-mono text-white rotate-90 block origin-left">ISSUE_REF_{employee.id.toUpperCase()}</span>
+      {/* Footer – line, branding left, pin right */}
+      <div
+        className="relative z-10 flex justify-between items-end px-16 pb-14 pt-8"
+        style={{
+          borderTop: '1px solid #1f2937',
+        }}
+      >
+        <div className="text-left">
+          <div
+            className="uppercase tracking-[0.35em] font-black"
+            style={{ color: 'rgba(255,255,255,0.9)', fontSize: 14 }}
+          >
+            Agropecuária
+          </div>
+          <div
+            className="font-black uppercase tracking-wider"
+            style={{ color: '#fff', fontSize: 36, fontFamily: "'Playfair Display', serif" }}
+          >
+            Stival
+          </div>
+          <div
+            className="mt-1.5 h-0.5"
+            style={{ width: '55%', backgroundColor: gold }}
+          />
+        </div>
+        <div
+          className="flex items-center justify-center rounded-xl bg-white"
+          style={{ width: 72, height: 72, boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}
+        >
+          <svg
+            className="text-gray-700"
+            style={{ width: 36, height: 36 }}
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+          </svg>
+        </div>
       </div>
     </div>
   );

@@ -22,6 +22,11 @@ dist-ssr
 *-firebase-adminsdk-*.json
 **/firebase*adminsdk*.json
 
+# Build e cache
+.cache
+coverage
+*.tsbuildinfo
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
