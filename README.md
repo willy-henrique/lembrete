@@ -12,9 +12,11 @@ View your app in AI Studio: https://ai.studio/apps/temp/1
 
 **Prerequisites:**  Node.js
 
-1. `npm install`
-2. Copie [.env-teste.example](.env-teste.example) para **`.env.local`**, preencha as variáveis `VITE_FIREBASE_*` (e as demais se usar). O Vite carrega `.env` e `.env.local`; use um deles para o app encontrar o Firebase.
+1. `npm install` (instala Tailwind, PostCSS, Firebase, etc.)
+2. Copie [.env-teste.example](.env-teste.example) para **`.env.local`**, preencha as variáveis `VITE_FIREBASE_*` (e as demais se usar). O Vite carrega `.env` e `.env.local`.
 3. `npm run dev`
+
+Tailwind usa PostCSS (não CDN). CSS em [index.css](index.css).
 
 Os **dados são reais** no Firestore (coleção `employees`). Excluir **um por um** (ícone lixeira na lista) ou **todos** (botão “Excluir todos os cadastros” no resumo).
 
@@ -28,6 +30,8 @@ Os **dados são reais** no Firestore (coleção `employees`). Excluir **um por u
 - Dados reais na coleção `employees`. Campos: `id`, `name`, `birthDay`, `birthMonth`, `unit`, `position`, `phone`, `photoUrl`.
 - Regras em [firestore.rules](firestore.rules) e [FIREBASE-RULES.md](FIREBASE-RULES.md). Índice em [firestore.indexes.json](firestore.indexes.json) (ordenação por `name`).
 - Deploy: `firebase deploy --only firestore:rules` e `firebase deploy --only firestore:indexes` se usar os índices.
+
+**"Missing or insufficient permissions"** → Publique as regras no Console (Firestore → Regras) ou rode `firebase deploy --only firestore:rules`. O [firestore.rules](firestore.rules) atual permite leitura/escrita sem login (`allow read, write: if true`).
 
 ## Env
 
