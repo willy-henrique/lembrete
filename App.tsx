@@ -25,12 +25,20 @@ const App: React.FC = () => {
   const [exportingId, setExportingId] = useState<string | null>(null);
   const [confirmDeleteAllOpen, setConfirmDeleteAllOpen] = useState(false);
   const [isDeletingAll, setIsDeletingAll] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
   const fetchEmployees = async () => {
     setLoading(true);
-    const data = await employeeService.getEmployees();
-    setEmployees(data);
-    setLoading(false);
+    setFetchError(null);
+    try {
+      const data = await employeeService.getEmployees();
+      setEmployees(data);
+    } catch (e) {
+      setFetchError(e instanceof Error ? e.message : 'Erro ao carregar dados.');
+      setEmployees([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -46,10 +54,9 @@ const App: React.FC = () => {
 
   const filteredData = useMemo(() => {
     return birthdayData.filter(emp => {
-      const matchSearch = emp.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      const matchSearch = emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           emp.position.toLowerCase().includes(searchTerm.toLowerCase());
-      const birthMonth = new Date(emp.birthDate).getUTCMonth();
-      const matchMonth = selectedMonth === 'all' || birthMonth === selectedMonth;
+      const matchMonth = selectedMonth === 'all' || emp.birthMonth - 1 === selectedMonth;
       const matchUnit = selectedUnit === 'all' || emp.unit === selectedUnit;
       return matchSearch && matchMonth && matchUnit;
     });
@@ -154,6 +161,18 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen pb-20 overflow-x-hidden">
+      {fetchError && (
+        <div className="bg-red-100 border-b border-red-300 text-red-800 px-4 py-3 flex flex-wrap items-center justify-center gap-3">
+          <span className="text-sm font-medium">{fetchError}</span>
+          <button
+            type="button"
+            onClick={fetchEmployees}
+            className="px-4 py-1.5 bg-red-600 hover:bg-red-700 text-white text-sm font-bold rounded-lg"
+          >
+            Tentar novamente
+          </button>
+        </div>
+      )}
       <Celebration active={todayBirthdays.length > 0} />
       
       <header className="agro-gradient text-[#F9F7F2] pt-12 md:pt-16 pb-20 md:pb-24 px-4 md:px-6 shadow-2xl relative overflow-hidden">
@@ -249,13 +268,13 @@ const App: React.FC = () => {
                           <div className="overflow-hidden">
                             <p className="font-bold text-[#1B4332] text-xs md:text-sm leading-tight truncate">{emp.name}</p>
                             <p className="text-[9px] md:text-[10px] text-gray-400 uppercase font-black tracking-widest mt-1 truncate">
-                              {new Date(emp.birthDate).toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'})} • {emp.unit}
+                              {String(emp.birthDay).padStart(2, '0')}/{String(emp.birthMonth).padStart(2, '0')} • {emp.unit}
                             </p>
                           </div>
                        </div>
                        <div className="flex gap-1 md:gap-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all ml-2">
                           <button onClick={() => { setEditingEmployee(emp); setIsModalOpen(true); }} className="p-1.5 text-[#1B4332] hover:text-[#FFB703] transition-colors"><svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" /></svg></button>
-                          <button onClick={() => handleDelete(emp.id)} className="p-1.5 text-[#1B4332] hover:text-red-500 transition-colors"><svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
+                          <button type="button" onClick={() => handleDelete(emp.id)} title="Excluir este colaborador" className="p-1.5 text-[#1B4332] hover:text-red-500 transition-colors"><svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg></button>
                        </div>
                     </div>
                   ))

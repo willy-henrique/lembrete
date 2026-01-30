@@ -1,48 +1,74 @@
-
+import {
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+  deleteDoc,
+  writeBatch,
+  query,
+  orderBy,
+} from 'firebase/firestore';
+import { db } from './firebase';
 import { Employee } from '../types';
-import { INITIAL_DATA } from '../constants';
 
-const STORAGE_KEY = 'juliana_lembre_employees';
+const COLLECTION = 'employees';
+
+function toEmployee(id: string, data: Record<string, unknown>): Employee {
+  return {
+    id,
+    name: (data.name as string) ?? '',
+    birthDay: Number(data.birthDay) || 1,
+    birthMonth: Number(data.birthMonth) || 1,
+    unit: (data.unit as Employee['unit']) ?? 'Campo',
+    position: (data.position as string) ?? '',
+    phone: (data.phone as string) ?? '',
+    photoUrl: data.photoUrl != null ? String(data.photoUrl) : undefined,
+  };
+}
+
+function toFirestore(e: Employee): Record<string, unknown> {
+  const o: Record<string, unknown> = {
+    name: e.name,
+    birthDay: e.birthDay,
+    birthMonth: e.birthMonth,
+    unit: e.unit,
+    position: e.position,
+    phone: e.phone,
+  };
+  if (e.photoUrl) o.photoUrl = e.photoUrl;
+  return o;
+}
 
 export const employeeService = {
-  /**
-   * Mocking an async fetch from a potential ERP API
-   */
   async getEmployees(): Promise<Employee[]> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) {
-          resolve(JSON.parse(stored));
-        } else {
-          // Initialize with mock data if empty
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_DATA));
-          resolve(INITIAL_DATA);
-        }
-      }, 500); // Simulate network latency
-    });
+    const col = collection(db, COLLECTION);
+    const q = query(col, orderBy('name'));
+    const snap = await getDocs(q);
+    return snap.docs.map((d) => toEmployee(d.id, d.data() as Record<string, unknown>));
   },
 
   async saveEmployee(employee: Employee): Promise<void> {
-    const current = await this.getEmployees();
-    const index = current.findIndex(e => e.id === employee.id);
-    
-    if (index >= 0) {
-      current[index] = employee;
-    } else {
-      current.push({ ...employee, id: Math.random().toString(36).substr(2, 9) });
-    }
-    
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(current));
+    const id =
+      employee.id ||
+      (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : Math.random().toString(36).slice(2, 11));
+    const ref = doc(db, COLLECTION, id);
+    await setDoc(ref, toFirestore({ ...employee, id }));
   },
 
   async deleteEmployee(id: string): Promise<void> {
-    const current = await this.getEmployees();
-    const filtered = current.filter(e => e.id !== id);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+    await deleteDoc(doc(db, COLLECTION, id));
   },
 
   async deleteAllEmployees(): Promise<void> {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
-  }
+    const snap = await getDocs(collection(db, COLLECTION));
+    const docs = snap.docs;
+    const BATCH_SIZE = 500;
+    for (let i = 0; i < docs.length; i += BATCH_SIZE) {
+      const batch = writeBatch(db);
+      docs.slice(i, i + BATCH_SIZE).forEach((d) => batch.delete(d.ref));
+      await batch.commit();
+    }
+  },
 };

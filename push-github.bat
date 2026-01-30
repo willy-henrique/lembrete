@@ -4,6 +4,8 @@ cd /d "%~dp0"
 echo.
 echo === Push Lembrete - GitHub ===
 echo.
+echo .gitignore: .env*, node_modules, *firebase*adminsdk*.json
+echo.
 
 echo [1/6] config.lock...
 if exist ".git\config.lock" (
@@ -47,7 +49,7 @@ if "%PRIMEIRO%"=="1" (
 :aftercommit
 
 echo.
-echo [5/6] Branch and remote...
+echo [5/6] Branch e remote...
 git branch -M main
 git remote remove origin 2>nul
 git remote add origin https://github.com/willy-henrique/lembrete.git

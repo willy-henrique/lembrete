@@ -47,7 +47,7 @@ const BirthdayCard: React.FC<BirthdayCardProps> = ({ employee, variant = 'main',
           <p className="text-[10px] text-gray-400 truncate">{employee.unit}</p>
         </div>
         <div className="text-right flex-shrink-0 ml-2">
-           <span className="text-[10px] md:text-xs font-bold text-[#1B4332] block">{formatBirthDateDisplay(employee.birthDate)}</span>
+           <span className="text-[10px] md:text-xs font-bold text-[#1B4332] block">{formatBirthDateDisplay(employee.birthDay, employee.birthMonth)}</span>
            <span className="text-[8px] md:text-[10px] text-[#74C69D] uppercase tracking-wider font-bold">
              {employee.isToday ? 'HOJE' : `em ${employee.daysUntil}d`}
            </span>
@@ -93,12 +93,8 @@ const BirthdayCard: React.FC<BirthdayCardProps> = ({ employee, variant = 'main',
           
           <div className="flex justify-center md:justify-start gap-6 md:gap-8 mb-6">
              <div className="flex flex-col">
-               <span className="text-[9px] md:text-[10px] uppercase text-gray-400 font-bold tracking-widest">Idade</span>
-               <span className="text-base md:text-lg font-black text-[#1B4332]">{employee.age} anos</span>
-             </div>
-             <div className="flex flex-col">
-               <span className="text-[9px] md:text-[10px] uppercase text-gray-400 font-bold tracking-widest">Data</span>
-               <span className="text-base md:text-lg font-black text-[#1B4332]">{formatBirthDateDisplay(employee.birthDate)}</span>
+               <span className="text-[9px] md:text-[10px] uppercase text-gray-400 font-bold tracking-widest">Aniversário</span>
+               <span className="text-base md:text-lg font-black text-[#1B4332]">{formatBirthDateDisplay(employee.birthDay, employee.birthMonth)}</span>
              </div>
           </div>
 

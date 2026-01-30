@@ -1,4 +1,3 @@
-
 export enum Unit {
   CAMPO = 'Campo',
   ADMINISTRATIVO = 'Administrativo',
@@ -12,15 +11,17 @@ export enum Unit {
 export interface Employee {
   id: string;
   name: string;
-  birthDate: string; // ISO format YYYY-MM-DD
+  /** Dia do aniversário (1–31). */
+  birthDay: number;
+  /** Mês do aniversário (1–12). */
+  birthMonth: number;
   unit: Unit;
   position: string;
   phone: string;
-  photoUrl?: string; // Base64 string
+  photoUrl?: string;
 }
 
 export interface BirthdayInfo extends Employee {
   daysUntil: number;
   isToday: boolean;
-  age: number;
 }
