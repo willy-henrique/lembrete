@@ -221,10 +221,7 @@ const App: React.FC = () => {
                 <div className="grid grid-cols-1 gap-6">
                   {todayBirthdays.map(emp => (
                     <div key={emp.id} className="relative group">
-                       <BirthdayCard 
-                          employee={emp} 
-                          onShare={(e) => handleShareOrExport(e, 'share')}
-                        />
+                       <BirthdayCard employee={emp} />
                        <div className="absolute top-4 right-4 md:top-6 md:right-6 flex flex-row md:flex-col gap-2 md:gap-3 opacity-100 md:opacity-0 group-hover:opacity-100 transition-all">
                           <button 
                             onClick={() => handleShareOrExport(emp, 'export')}
