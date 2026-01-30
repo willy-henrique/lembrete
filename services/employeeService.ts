@@ -47,14 +47,16 @@ export const employeeService = {
     return snap.docs.map((d) => toEmployee(d.id, d.data() as Record<string, unknown>));
   },
 
-  async saveEmployee(employee: Employee): Promise<void> {
+  async saveEmployee(employee: Employee): Promise<Employee> {
     const id =
       employee.id ||
       (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
         ? crypto.randomUUID()
         : Math.random().toString(36).slice(2, 11));
+    const saved: Employee = { ...employee, id };
     const ref = doc(db, COLLECTION, id);
-    await setDoc(ref, toFirestore({ ...employee, id }));
+    await setDoc(ref, toFirestore(saved));
+    return saved;
   },
 
   async deleteEmployee(id: string): Promise<void> {

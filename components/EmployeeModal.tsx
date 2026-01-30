@@ -7,9 +7,10 @@ interface EmployeeModalProps {
   onClose: () => void;
   onSave: (employee: Employee) => void;
   employeeToEdit?: Employee | null;
+  isSaving?: boolean;
 }
 
-const EmployeeModal: React.FC<EmployeeModalProps> = ({ isOpen, onClose, onSave, employeeToEdit }) => {
+const EmployeeModal: React.FC<EmployeeModalProps> = ({ isOpen, onClose, onSave, employeeToEdit, isSaving = false }) => {
   const [formData, setFormData] = useState<Partial<Employee>>({
     name: '',
     birthDay: 1,
@@ -78,7 +79,8 @@ const EmployeeModal: React.FC<EmployeeModalProps> = ({ isOpen, onClose, onSave, 
           <button
             type="button"
             onClick={onClose}
-            className="p-2 sm:p-3 bg-white/10 hover:bg-white/20 rounded-full transition-all"
+            disabled={isSaving}
+            className="p-2 sm:p-3 bg-white/10 hover:bg-white/20 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -99,7 +101,8 @@ const EmployeeModal: React.FC<EmployeeModalProps> = ({ isOpen, onClose, onSave, 
             </label>
             <input
               required
-              className="w-full bg-[#F9F7F2] rounded-2xl px-5 py-3 sm:py-4 outline-none border-2 border-transparent focus:border-[#FFB703] transition-all font-medium text-sm"
+              disabled={isSaving}
+              className="w-full bg-[#F9F7F2] rounded-2xl px-5 py-3 sm:py-4 outline-none border-2 border-transparent focus:border-[#FFB703] transition-all font-medium text-sm disabled:opacity-60 disabled:cursor-not-allowed"
               value={formData.name ?? ''}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
@@ -112,7 +115,8 @@ const EmployeeModal: React.FC<EmployeeModalProps> = ({ isOpen, onClose, onSave, 
             <div className="grid grid-cols-2 gap-4">
               <select
                 required
-                className="w-full bg-[#F9F7F2] rounded-2xl px-5 py-3 sm:py-4 outline-none border-2 border-transparent focus:border-[#FFB703] transition-all text-sm appearance-none cursor-pointer"
+                disabled={isSaving}
+                className="w-full bg-[#F9F7F2] rounded-2xl px-5 py-3 sm:py-4 outline-none border-2 border-transparent focus:border-[#FFB703] transition-all text-sm appearance-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 value={formData.birthDay ?? 1}
                 onChange={(e) => setFormData({ ...formData, birthDay: Number(e.target.value) })}
               >
@@ -124,7 +128,8 @@ const EmployeeModal: React.FC<EmployeeModalProps> = ({ isOpen, onClose, onSave, 
               </select>
               <select
                 required
-                className="w-full bg-[#F9F7F2] rounded-2xl px-5 py-3 sm:py-4 outline-none border-2 border-transparent focus:border-[#FFB703] transition-all text-sm appearance-none cursor-pointer"
+                disabled={isSaving}
+                className="w-full bg-[#F9F7F2] rounded-2xl px-5 py-3 sm:py-4 outline-none border-2 border-transparent focus:border-[#FFB703] transition-all text-sm appearance-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 value={formData.birthMonth ?? 1}
                 onChange={(e) => setFormData({ ...formData, birthMonth: Number(e.target.value) })}
               >
@@ -143,7 +148,8 @@ const EmployeeModal: React.FC<EmployeeModalProps> = ({ isOpen, onClose, onSave, 
                 Unidade
               </label>
               <select
-                className="w-full bg-[#F9F7F2] rounded-2xl px-5 py-3 sm:py-4 outline-none border-2 border-transparent focus:border-[#FFB703] transition-all text-sm appearance-none cursor-pointer"
+                disabled={isSaving}
+                className="w-full bg-[#F9F7F2] rounded-2xl px-5 py-3 sm:py-4 outline-none border-2 border-transparent focus:border-[#FFB703] transition-all text-sm appearance-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 value={formData.unit ?? Unit.CAMPO}
                 onChange={(e) => setFormData({ ...formData, unit: e.target.value as Unit })}
               >
@@ -160,7 +166,8 @@ const EmployeeModal: React.FC<EmployeeModalProps> = ({ isOpen, onClose, onSave, 
               </label>
               <input
                 required
-                className="w-full bg-[#F9F7F2] rounded-2xl px-5 py-3 sm:py-4 outline-none border-2 border-transparent focus:border-[#FFB703] transition-all text-sm"
+                disabled={isSaving}
+                className="w-full bg-[#F9F7F2] rounded-2xl px-5 py-3 sm:py-4 outline-none border-2 border-transparent focus:border-[#FFB703] transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed"
                 value={formData.position ?? ''}
                 onChange={(e) => setFormData({ ...formData, position: e.target.value })}
               />
@@ -174,7 +181,8 @@ const EmployeeModal: React.FC<EmployeeModalProps> = ({ isOpen, onClose, onSave, 
             <input
               placeholder="5511999999999"
               type="tel"
-              className="w-full bg-[#F9F7F2] rounded-2xl px-5 py-3 sm:py-4 outline-none border-2 border-transparent focus:border-[#FFB703] transition-all text-sm"
+              disabled={isSaving}
+              className="w-full bg-[#F9F7F2] rounded-2xl px-5 py-3 sm:py-4 outline-none border-2 border-transparent focus:border-[#FFB703] transition-all text-sm disabled:opacity-60 disabled:cursor-not-allowed"
               value={formData.phone ?? ''}
               onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             />
@@ -198,8 +206,9 @@ const EmployeeModal: React.FC<EmployeeModalProps> = ({ isOpen, onClose, onSave, 
                 <input
                   type="file"
                   accept="image/*"
+                  disabled={isSaving}
                   onChange={handleFileChange}
-                  className="w-full text-[10px] file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[10px] file:font-black file:bg-[#1B4332] file:text-white file:uppercase file:cursor-pointer"
+                  className="w-full text-[10px] file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-[10px] file:font-black file:bg-[#1B4332] file:text-white file:uppercase file:cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -207,9 +216,10 @@ const EmployeeModal: React.FC<EmployeeModalProps> = ({ isOpen, onClose, onSave, 
 
           <button
             type="submit"
-            className="w-full py-4 sm:py-5 bg-[#1B4332] hover:bg-[#AACC00] text-white font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] rounded-2xl transition-all shadow-xl text-xs sm:text-sm mt-2"
+            disabled={isSaving}
+            className="w-full py-4 sm:py-5 bg-[#1B4332] hover:bg-[#AACC00] text-white font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] rounded-2xl transition-all shadow-xl text-xs sm:text-sm mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            {employeeToEdit ? 'Atualizar' : 'Salvar'}
+            {isSaving ? 'Salvando...' : employeeToEdit ? 'Atualizar' : 'Salvar'}
           </button>
         </form>
       </div>

@@ -26,6 +26,7 @@ const App: React.FC = () => {
   const [confirmDeleteAllOpen, setConfirmDeleteAllOpen] = useState(false);
   const [isDeletingAll, setIsDeletingAll] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const fetchEmployees = async () => {
     setLoading(true);
@@ -63,10 +64,23 @@ const App: React.FC = () => {
   }, [birthdayData, searchTerm, selectedMonth, selectedUnit]);
 
   const handleSave = async (employee: Employee) => {
-    await employeeService.saveEmployee(employee);
-    await fetchEmployees();
-    setIsModalOpen(false);
-    setEditingEmployee(null);
+    setIsSaving(true);
+    try {
+      const saved = await employeeService.saveEmployee(employee);
+      setEmployees((prev) => {
+        const i = prev.findIndex((e) => e.id === saved.id);
+        if (i >= 0) {
+          const next = [...prev];
+          next[i] = saved;
+          return next;
+        }
+        return [...prev, saved];
+      });
+      setIsModalOpen(false);
+      setEditingEmployee(null);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -321,11 +335,12 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      <EmployeeModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSave={handleSave} 
+      <EmployeeModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSave}
         employeeToEdit={editingEmployee}
+        isSaving={isSaving}
       />
 
       <ConfirmDeleteAllModal

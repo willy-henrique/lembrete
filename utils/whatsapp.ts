@@ -7,7 +7,7 @@ export function normalizePhoneForWhatsApp(phone: string): string {
 }
 
 export function getCongratulationsMessage(name: string): string {
-  return `Parabéns, ${name}! 🎂 Desejamos que este novo ciclo seja iluminado, repleto de saúde, paz e muitas alegrias. Que sua trajetória continue sendo marcada pelo sucesso e por grandes realizações, tanto na vida pessoal quanto na carreira. Aproveite seu dia ao máximo! 🎈🥳`;
+  return `Parabéns, ${name}! ★ Desejamos que este novo ciclo seja iluminado, repleto de saúde, paz e muitas alegrias. Que sua trajetória continue sendo marcada pelo sucesso e por grandes realizações, tanto na vida pessoal quanto na carreira. Aproveite seu dia ao máximo! ✨`;
 }
 
 /**
